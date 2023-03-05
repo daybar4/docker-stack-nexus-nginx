@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  nginx-proxy:
+    container_name:  nginx-proxy
+    build: ./nginx
+    ports:
+      - ${PORT_HTTPS}:443 ## Open only secure connection
+      - ${PORT_NEXUS}:5000
+    links:
+      - nexus-ci
+    volumes:
+      - ${VOl_NGINX_LOGS}:/var/log/nginx
+    command: [ nginx, '-g', 'daemon off;' ]
+
+  nexus-ci:
+    container_name:  nexus-ci
+    image: sonatype/nexus3:3.48.0
+    environment: ## Pass JVM arguments to the startup script
+      INSTALL4J_ADD_VM_PARAMS: "-Xms2703m -Xmx2703m -XX:MaxDirectMemorySize=2703m -Djava.util.prefs.userRoot=/javaprefs"
+    volumes:
+      - ${VOl_NEXUS_DATA}:/nexus-data ## Used for configuration, logs, and storage
+      #- ./nexus/etc/nexus.properties:/nexus-data/etc/nexus.properties
+      ## Installation of Nexus is to /opt/sonatype/nexus. Not need persistency.
