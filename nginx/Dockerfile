@@ -1,9 +1,5 @@
 FROM nginx:1.23
 
-## For passwd file
-RUN apt-get update; apt-get install -y \
-    apache2-utils
-
 ## For localhost testing pruposes, uncomment in localhost
 RUN apt-get install -y openssl
 RUN mkdir -p /etc/nginx/external; \
@@ -13,6 +9,5 @@ RUN mkdir -p /etc/nginx/external; \
     -out "/etc/nginx/external/cert.pem" \
     -days 365 -nodes -sha256
 
-# Configuration
+# Add configuration
 ADD nginx.conf /etc/nginx/nginx.conf
-ADD .htpasswd /etc/apache2/.htpasswd
